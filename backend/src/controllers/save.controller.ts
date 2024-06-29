@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { validateData } from '../middleware/validation-middleware';
 import SaveService from '../services/save.service';
 
+
 export interface Save {
     id: number;
 }
@@ -30,9 +31,8 @@ export default class SaveController {
     private async saveReservation(req: Request, res: Response) {
         const { client_id, reservation_id } = req.body;
         const result = await this.saveService.saveReservation(Number(client_id), Number(reservation_id));
-        res.status(201).json(result);
+        res.status(201).json({status: 201, message: 'A reserva foi salva com sucesso!'});
     }
-
 
     private async getSavedReservationByClientId(req: Request, res: Response) {
         const { id } = req.params;
@@ -49,8 +49,6 @@ export default class SaveController {
     private async deleteSavedReservationById(req: Request, res: Response) {
         const { client_id, reservation_id} = req.params;
         await this.saveService.deleteSavedReservationById(Number(client_id), Number(reservation_id));
-        res.status(204).send();
+        res.status(200).send({status: 200, message: 'A reserva foi removida dos salvos com sucesso!'});
     }
-  }
-
-
+}

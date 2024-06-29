@@ -3,22 +3,16 @@ As a usuário “Cliente”
 I want to avaliar uma reserva que já foi feita
 So that outros usuários possam ver a minha opinião sobre a reserva
 
-Scenario: Ver avaliação de uma reserva
-Given eu estou na página do  “Hotel Transamérica” 
-And o “Hotel Transamérica” já possui 10 ou mais avaliações
-When eu seleciono “Hotel Transamérica”
-And eu seleciono “Avaliações”
-Then eu vejo a classificação “Bom” da reserva e a nota “4,5”
-And eu vejo as últimas 10 avaliações do “Hotel Transamérica”
-
 Scenario: Avaliação de reserva bem sucedida
-Given eu estou na página de “Minhas Reservas”
-And ja reservei “Hotel fazenda em Gravatá”
-When eu seleciono “Avaliar Reserva” abaixo da reserva de “Hotel fazenda em Gravatá”
-And eu atribuo nota “3.7” em “Avaliação” e um comentario “Valeu a pena”
-And eu Seleciono “Confirmar”
-Then eu recebo uma mensagem “Avaliação bem sucedida”
-And eu estou para a página de “Minhas Reservas”
-And eu seleciono “Hotel fazenda em Gravatá”
-And eu seleciono “Avaliações”
-And eu vejo minha avaliação no topo da lista de avaliações
+Given existe um usuário "Cliente" logado com o e-mail "acfml@cin.ufpe.br" e a senha "12345"
+And o “Hotel fazenda em Gravatá” está na listagem de reserva
+When uma requisição POST é enviada para "/rated-reservations" com nota de 3.7”  e comentário “Valeu a pena”
+Then é retornada a mensagem “Avaliação realizada com sucesso”
+ And o status da resposta deve ser "201"
+
+Scenario: Deletar avaliação de uma reserva
+Given existe um usuário "Cliente" logado com o e-mail "acfml@cin.ufpe.br" e a senha "12345"
+And existe uma avaliação de reserva com client_id “1” , reservation_id “1”, nota “4.5” e comentário “Muito bom”
+When uma requisição DELETE é enviada para "/rated-reservations/1/1"
+Then é retornada a mensagem “Avaliação deletada com sucesso”
+ And o status da resposta deve ser "204"

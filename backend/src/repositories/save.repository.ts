@@ -12,7 +12,7 @@ export default class SaveRepository {
     }
     // savedListId depepnde do cliente
 
-    async saveReservation(client_id: number, reservation_id: number): Promise<{id: number}> {
+    async saveReservation(client_id: number, reservation_id: number): Promise<{client_id: number}> {
         try {
             const reservation = await this.prisma.publishedReservation.findUnique({
                 where: {
@@ -42,7 +42,7 @@ export default class SaveRepository {
                 }
             });
 
-            return { id:result.client_id};
+            return { client_id:result.client_id};
         } 
         catch (error) {
             throw error;
@@ -108,10 +108,12 @@ export default class SaveRepository {
 
     async deleteSavedReservationById(client_id: number, reservation_id: number): Promise<void> {
         try {
-            await this.prisma.clientSavedReservation.deleteMany({
+            await this.prisma.clientSavedReservation.delete({
                 where:{
-                    client_id : client_id,
-                    reservation_id : reservation_id
+                    client_id_reservation_id: {
+                        client_id: client_id,
+                        reservation_id: reservation_id
+                    }
                 }
             })
         } 

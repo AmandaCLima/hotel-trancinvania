@@ -8,7 +8,7 @@ export default class SaveService {
         this.saveRepository = new SaveRepository();
     }
 
-    async saveReservation(client_id: number, reservationId: number): Promise<{id: number}> {
+    async saveReservation(client_id: number, reservationId: number): Promise<{client_id: number}> {
         return await this.saveRepository.saveReservation(client_id, reservationId);
     }
     async getSavedReservationByClientId(id: number): Promise<PublishedReservation[]> {
@@ -19,5 +19,5 @@ export default class SaveService {
     }
     async deleteSavedReservationById(client_id: number,reservation_id: number): Promise<void> {
         await this.saveRepository.deleteSavedReservationById(client_id,reservation_id);
-    }   
+    }
 }

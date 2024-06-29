@@ -1,4 +1,4 @@
-import { Hotelier, PublishedReservation, Client, Reserve, PaymentMethod } from "../controllers/reservation.controller";
+import { Hotelier, PublishedReservation, Client, Reserve, PaymentMethod} from "../controllers/reservation.controller";
 import { PrismaClient, Prisma} from '@prisma/client';
 
 export default class SetupDatabaseTest{
@@ -10,6 +10,7 @@ export default class SetupDatabaseTest{
     }
 
     async resetDatabase(){
+        await this.prisma.clientSavedReservation.deleteMany();
         await this.prisma.promotion.deleteMany();
         await this.prisma.reserve.deleteMany();
         await this.prisma.publishedReservation.deleteMany();
@@ -51,14 +52,19 @@ export default class SetupDatabaseTest{
             await this.prisma.reserve.create({data: reservation});
         }
     }
+    async setupDatabaseforSavedReservationTests(client: Prisma.ClientCreateInput, hotelier: Prisma.HotelierCreateInput, publishedReservation: Prisma.PublishedReservationCreateInput, clientSavedReservation?: { client_id: number, reservation_id: number }[]) {
+        await this.prisma.client.create({ data: client });
+        await this.prisma.hotelier.create({ data: hotelier });
+        await this.prisma.publishedReservation.create({ data: publishedReservation });
 
-    async setupDatabaseForBuscaTests(publishedReservation: Prisma.PublishedReservationCreateInput, reservation: Reserve, hotelier: Hotelier, promotion: Prisma.PromotionCreateInput, client: Client, paymentMethod: Prisma.PaymentMethodCreateInput){
-        let {id, ...reserv} = reservation;
-        await this.prisma.client.create({data: client});
-        await this.prisma.paymentMethod.create({data: paymentMethod})
-        await this.prisma.hotelier.create({data: hotelier});
-        await this.prisma.promotion.create({data: promotion});
-        await this.prisma.publishedReservation.create({data: publishedReservation});
-        await this.prisma.reserve.create({data: reserv});
+        if (Array.isArray(clientSavedReservation)) {
+            for (let i = 0; i < clientSavedReservation.length; i++) {
+                const savedReservation = {
+                    client: { connect: { id: clientSavedReservation[i].client_id } },
+                    reservation: { connect: { id: clientSavedReservation[i].reservation_id } }
+                };
+                await this.prisma.clientSavedReservation.create({ data: savedReservation });
+            }
+        }
     }
 }

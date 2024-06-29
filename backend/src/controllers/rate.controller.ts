@@ -34,7 +34,8 @@ export default class RateController {
     private async rateReservation(req: Request, res: Response) {
         const {reservation_id, client_id, rating, comments } = req.body;
         const result = await this.rateService.rateReservation(Number(reservation_id), Number(client_id), rating, comments);
-        res.status(200).json(result);
+        res.status(201).json({ status: 201, message:`Avaliação realizada com sucesso!`});
+  
     }
 
     private async getAllRatesbyPublishedReservation(req: Request, res: Response) {
