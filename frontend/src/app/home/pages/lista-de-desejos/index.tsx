@@ -21,7 +21,7 @@ import {
   ];
   const logoUrl = "https://www.cin.ufpe.br/~imprensa/marcacinpng/TMB";
   
-  export const Avaliacoes = () => {
+  export const ListadeDesejos = () => {
     return (
       <>
         <Global
@@ -48,7 +48,7 @@ import {
           {/* Adicionando o título e os botões sobre a imagem */}
           <Box position="absolute" top="9%" left="25%" transform="translate(-50%, -50%)">
             <Text fontSize="25px" fontFamily="Inter" fontWeight="200" mb={3} textAlign="center" color="#EAEAEA">
-              Minhas Avaliações
+              Lista de Desejos
             </Text>
           </Box>
             

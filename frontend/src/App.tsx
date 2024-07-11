@@ -4,6 +4,7 @@ import { MeuPerfil } from "./app/home/pages/perfil";
 import { Avaliacoes } from "./app/home/pages/avaliacoes";
 import LoginClient from "./app/auth/pages/client/login";
 import LoginHotelier from "./app/auth/pages/hotelier/login";
+import { ListadeDesejos } from "./app/home/pages/lista-de-desejos";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
   {
     path: "/perfil/meu-perfil/avaliacoes",
     Component: Avaliacoes,
+  },
+  {
+    path: "/perfil/meu-perfil/lista-de-desejos",
+    Component: ListadeDesejos,
   },
   /*{
     path: "/register/client",
