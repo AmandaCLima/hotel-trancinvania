@@ -15,8 +15,6 @@ import { SaveModel } from '../../../Wishlist/models';
 import { ToastContainer, toast } from 'react-toastify';
 import { useClientData } from '../../../auth/hooks/useUserData';
 import { useReservationContext } from '../../../PublishedReservation/context';
-// import { getPublishedReservationWithHotelierById } from '../../../PublishedReservation/services';
-// import { PublishedHotelierModel } from '../../models/publishedhotelier'
 import { getHotelierById } from '../../../auth/services';
 import { HotelierModel } from '../../models/publishedhotelier';
 
@@ -25,18 +23,12 @@ const SelectReservation: React.FC = () => {
     const clientId = Number(data?.id);
     const [hotelier, setHotelier] = useState <HotelierModel>({} as HotelierModel)
     const { selectedReservation } = useReservationContext();
-    //const { reservation_id } = useParams();
-    //const [reservationData, setReservationData] = useState<PublishedHotelierModel>({} as PublishedHotelierModel);
     const [reservationData, setReservationData] = useState<PublishedReservationModel>({} as PublishedReservationModel);
-    //const [reservationData, setReservationData] = useState<PublishedHotelierModel>({} as PublishedHotelierModel);
     useEffect(() => {
         const fetchReservationData = async () => {
             if (selectedReservation?.id) {
                 try {
-                    //console.log('Fetching reservation data for ID:', reservation_id);
                     const response = await getPublishedReservationById(selectedReservation?.id) ?? '';
-                    //const response = await getPublishedReservationWithHotelierById(selectedReservation?.id) ?? '';
-                    //console.log('Fetched reservation data:', response);
                     setReservationData(response);
                 } catch (error) {
                     console.error('Erro ao obter os dados da reserva:', error);

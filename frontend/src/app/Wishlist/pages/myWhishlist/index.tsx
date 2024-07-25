@@ -4,9 +4,7 @@ import {
   Flex,
   Button,
 } from "@chakra-ui/react";
-//import { Fonts } from "../../../../shared/theme/Fonts";
 import { DeleteIcon, ArrowForwardIcon } from "@chakra-ui/icons";
-//import { Global } from "@emotion/react";
 import { NavBar } from "../../../../shared/components/nav-bar";
 import { ToastContainer, toast } from "react-toastify";
 import {

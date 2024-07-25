@@ -1,33 +1,66 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Button, Flex, Textarea, Text } from '@chakra-ui/react';
 import { FaStar } from 'react-icons/fa';
 import { useNavigate, useParams } from 'react-router-dom';
-import { rateReservation } from '../../services'; 
+import { rateReservation, editRateReservation, getRatesByClientId } from '../../services'; 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { NavBar } from '../../../../shared/components/nav-bar';
 import { BottomLeftTopRightImages } from '../../../../shared/components/spider-images';
+import { RateModel } from '../../models';
+import { useClientData } from '../../../auth/hooks/useUserData';
 
 export const Rating = () => {
   const { reservationId } = useParams<{ reservationId: string }>();
   const navigate = useNavigate();
+  const { data } = useClientData();
+  const client_id = Number(data?.id);
+  
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
   const [comments, setComments] = useState('');
+  const [existingRate, setExistingRate] = useState<RateModel | null>(null);
+
+  useEffect(() => {
+    const fetchRate = async () => {
+      try {
+        const allRates: RateModel[] = await getRatesByClientId(client_id);
+        const rate = allRates.find(rate => rate.reservation_id === Number(reservationId));
+        if (rate) {
+          setRating(rate.rating);
+          setComments(rate.comments || '');
+          setExistingRate(rate);
+        }
+      } catch (error) {
+        toast.error('Erro ao buscar avaliação existente. Tente novamente.');
+      }
+    };
+
+    fetchRate();
+  }, [reservationId, client_id]);
 
   const handleRatingSubmit = async () => {
     try {
-      const client_id = 1; // Obtenha o ID do cliente do contexto de autenticação
-      await rateReservation({
-        client_id,
-        reservation_id: Number(reservationId),
-        rating,
-        comments, // Comentário é opcional
-      });
-      toast.success('Avaliação enviada com sucesso!');
+      if (existingRate) {
+        // Editar avaliação existente
+        await editRateReservation(client_id, Number(reservationId), {
+          rating,
+          comments,
+        });
+        toast.success('Avaliação atualizada com sucesso!');
+      } else {
+        // Criar nova avaliação
+        await rateReservation({
+          client_id,
+          reservation_id: Number(reservationId),
+          rating,
+          comments,
+        });
+        toast.success('Avaliação enviada com sucesso!');
+      }
       setTimeout(() => {
-        navigate('/client/profile/rate'); // Redirecionar para a página de avaliações
-      }, 2000); // Espera de 2 segundos para exibir a mensagem de sucesso
+        navigate('/client/profile/rate');
+      }, 2000);
     } catch (error) {
       toast.error('Erro ao enviar avaliação. Tente novamente.');
     }
@@ -70,9 +103,15 @@ export const Rating = () => {
           bg="#333"
           border="none"
           _focus={{ outline: 'none' }}
-          width="300px" // Diminuir a largura da caixa de texto
+          width="300px"
         />
-        <Button onClick={handleRatingSubmit} bg="#6A0572" color="#eaeaea" _hover={{ bg: '#eaeaea', color: '#6A0572' }}>
+        <Button
+          onClick={handleRatingSubmit}
+          bg="#6A0572"
+          color="#eaeaea"
+          _hover={{ bg: '#eaeaea', color: '#6A0572' }}
+          disabled={rating === 0}
+        >
           Enviar Avaliação
         </Button>
         <ToastContainer />

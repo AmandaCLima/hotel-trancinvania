@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
-import 'react-toastify/dist/ReactToastify.css';
 import { Box, Flex, IconButton, Tooltip, Text } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { NavBar } from '../../../../shared/components/nav-bar';
 import { getPublishedReservationById } from '../../../PublishedReservation/services';
 import { PublishedReservationModel } from '../../../PublishedReservation/models/publishedReservation';
 import { getReservationsByClient } from '../../../reservation/services'; 
-import { getRatesByClientId, deleteRateById } from '../../services';
+import { getRatesByClientId, deleteRateById, editRateReservation } from '../../services';
 import { ReserveModel } from '../../../reservation/models/reserve'; 
 import { RateModel } from '../../models';
 import { useClientData } from "../../../auth/hooks/useUserData";
@@ -34,7 +33,6 @@ export const Rate = () => {
         }
         setPublishedReservations(publishedReservationsData);
 
-        // Obter avaliações do cliente
         const ratesResponse = await getRatesByClientId(client_id);
         const ratesData: { [key: number]: RateModel } = {};
         for (const rate of ratesResponse) {
@@ -51,7 +49,7 @@ export const Rate = () => {
     fetchReservations();
   }, [client_id]);
 
-  const getStatus = (checkin: string, checkout: string) => {
+  const getStatus = (checkin: string, checkout: string): string => {
     const currentDate = new Date();
     const checkinDate = new Date(checkin);
     const checkoutDate = new Date(checkout);
@@ -65,7 +63,7 @@ export const Rate = () => {
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: string): string => {
     switch (status) {
       case 'Reserva Concluída':
         return '#FF0000'; // Vermelho
@@ -78,26 +76,13 @@ export const Rate = () => {
     }
   };
 
-  // Filtrar reservas concluídas
-  const completedReservations = reservations.filter(reservation => {
-    const publishedReservation = publishedReservations[reservation.publishedReservationId];
-    if (!publishedReservation) return false;
-    const status = getStatus(reservation.checkin, reservation.checkout);
-    return status === 'Reserva Concluída';
-  });
-
   const handleReview = (reservationId: number) => {
-    if (rates[reservationId]) {
-      navigate(`/client/profile/rate/edit/${reservationId}`);
-    } else {
-      navigate(`/client/profile/rate/rating/${reservationId}`);
-    }
+    navigate(`/client/profile/rate/rating/${reservationId}`);
   };
 
   const handleDelete = async (reservationId: number) => {
     try {
       await deleteRateById(client_id, reservationId);
-      // Atualizar o estado após a exclusão
       setRates((prevRates) => {
         const { [reservationId]: _, ...rest } = prevRates;
         return rest;
@@ -114,15 +99,16 @@ export const Rate = () => {
       <Box p="50px" position="relative">
         <Box fontFamily="Trancinfont" fontSize="6xl" mt="-25px" textAlign="center" color="#eaeaea">Minhas Avaliações</Box>
         <Flex flexWrap="wrap" gap="75px" mt="30px">
-          {completedReservations.map((reservation) => {
+          {reservations.map((reservation) => {
             const publishedReservation = publishedReservations[reservation.publishedReservationId];
             if (!publishedReservation) {
               return null;
             }
             const status = getStatus(reservation.checkin, reservation.checkout);
             const statusColor = getStatusColor(status);
-            const rate = rates[reservation.id]; // Obter a avaliação
-            const hasRate = !!rate; // Verificar se há uma avaliação
+            const rate = rates[reservation.id];
+            const hasRate = !!rate;
+
             return (
               <Box key={reservation.id} position="relative" w="250px" _hover={{ transform: 'translateY(-5px)' }}>
                 <Box position="relative" w="270px" bg="transparent" borderRadius="10px" overflow="hidden" color="#191919" cursor="pointer">

@@ -25,7 +25,7 @@ export async function deleteRateById(client_id: number, reservation_id: number) 
 }
 
 // Função para editar uma avaliação
-export async function editRateById(client_id: number, reservation_id: number, params: Partial<RateModel>) {
+export async function editRateReservation(client_id: number, reservation_id: number, params: Partial<RateModel>) {
     const response = await apiService.patch(`/rated-reservations/${client_id}/${reservation_id}`, params);
     return response.data;
 }
