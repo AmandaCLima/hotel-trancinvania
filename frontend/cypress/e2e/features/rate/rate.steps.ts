@@ -12,7 +12,7 @@ Given('eu estou na página {string}', (page: string) => {
     cy.url().should('include', page);
 });
 
-When('eu seleciono a opcao {string} do {string}', (option: string, hotelName: string) => {
+When('eu seleciono a opcao {string} da {string}', (option: string, hotelName: string) => {
     cy.contains(hotelName).parent().within(() => {
         cy.contains(option).click();
     });
