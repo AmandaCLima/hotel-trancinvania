@@ -76,9 +76,6 @@ export const Rate = () => {
     }
   };
 
-  const handleReview = (reservationId: number) => {
-    navigate(`/client/profile/rate/rating/${reservationId}`);
-  };
 
   const handleDelete = async (reservationId: number) => {
     try {
@@ -120,7 +117,7 @@ export const Rate = () => {
                       <IconButton
                         icon={hasRate ? <FaEdit /> : <FaStar />}
                         aria-label={hasRate ? "Editar Avaliação" : "Avaliar"}
-                        onClick={() => handleReview(reservation.id)}
+                        onClick={() => navigate(`/client/profile/rate/rating/${reservation.id}`)}
                         bg="transparent"
                         color="#EAEAEA"
                         _hover={{ color: '#6A0572' }}
