@@ -7,6 +7,6 @@ Scenario: Salvar reserva com sucesso
 Given eu estou logado como cliente com o username "Bela" e a senha "ess1234"
 And eu estou na página "/select-reservation" da reserva "Suite-campo"
 When eu salvo a reserva "Suite-campo"
-Then eu vejo um toast de sucesso com a mensagem “Reserva salva com sucesso”
+Then eu vejo um toast de sucesso com a mensagem 'Reserva salva com sucesso!'
 And eu vou na página de "Lista de desejos" em "Meu Perfil"
-And eu vejo "Suíte campo" salva
+And eu vejo 'Suite campo' salva
