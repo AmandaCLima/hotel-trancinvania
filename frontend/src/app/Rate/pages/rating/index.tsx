@@ -42,14 +42,12 @@ export const Rating = () => {
   const handleRatingSubmit = async () => {
     try {
       if (existingRate) {
-        // Editar avaliação existente
         await editRateReservation(client_id, Number(reservationId), {
           rating,
           comments,
         });
         toast.success('Avaliação atualizada com sucesso!');
       } else {
-        // Criar nova avaliação
         await rateReservation({
           client_id,
           reservation_id: Number(reservationId),
@@ -83,12 +81,14 @@ export const Rating = () => {
                   style={{ display: 'none' }}
                   value={ratingValue}
                   onClick={() => setRating(ratingValue)}
+                  data-cy={`star-${ratingValue}`}
                 />
                 <FaStar
                   color={ratingValue <= (hover || rating) ? '#ffc107' : '#e4e5e9'}
                   size={50}
                   onMouseEnter={() => setHover(ratingValue)}
                   onMouseLeave={() => setHover(0)}
+                  data-cy={`star-icon-${ratingValue}`}
                 />
               </label>
             );
@@ -104,6 +104,7 @@ export const Rating = () => {
           border="none"
           _focus={{ outline: 'none' }}
           width="300px"
+          data-cy="comments-input" // Certifique-se de que o data-cy seja o mesmo usado no teste
         />
         <Button
           onClick={handleRatingSubmit}
@@ -111,6 +112,7 @@ export const Rating = () => {
           color="#eaeaea"
           _hover={{ bg: '#eaeaea', color: '#6A0572' }}
           disabled={rating === 0}
+          data-cy="submit-rating-button"
         >
           Enviar Avaliação
         </Button>

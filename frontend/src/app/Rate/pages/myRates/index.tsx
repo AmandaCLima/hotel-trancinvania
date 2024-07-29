@@ -5,14 +5,14 @@ import { NavBar } from '../../../../shared/components/nav-bar';
 import { getPublishedReservationById } from '../../../PublishedReservation/services';
 import { PublishedReservationModel } from '../../../PublishedReservation/models/publishedReservation';
 import { getReservationsByClient } from '../../../reservation/services'; 
-import { getRatesByClientId, deleteRateById, editRateReservation } from '../../services';
+import { getRatesByClientId, deleteRateById } from '../../services';
 import { ReserveModel } from '../../../reservation/models/reserve'; 
 import { RateModel } from '../../models';
 import { useClientData } from "../../../auth/hooks/useUserData";
 import { ToastContainer, toast } from 'react-toastify';
 import { FaStar, FaTrashAlt, FaEdit } from 'react-icons/fa';
 
-export const Rate = () => {
+const Rate: React.FC = () => {
   const [reservations, setReservations] = useState<ReserveModel[]>([]);
   const [publishedReservations, setPublishedReservations] = useState<{ [key: number]: PublishedReservationModel }>({});
   const [rates, setRates] = useState<{ [key: number]: RateModel }>({});
@@ -41,8 +41,7 @@ export const Rate = () => {
         setRates(ratesData);
 
       } catch (error) {
-        const err = error as { response: { data: { message: string } } };
-        toast.error(`${err.response.data.message}`);
+        //toast.error('Erro ao buscar dados. Por favor, tente novamente mais tarde.');
       }
     };
 
@@ -76,7 +75,6 @@ export const Rate = () => {
     }
   };
 
-
   const handleDelete = async (reservationId: number) => {
     try {
       await deleteRateById(client_id, reservationId);
@@ -107,7 +105,7 @@ export const Rate = () => {
             const hasRate = !!rate;
 
             return (
-              <Box key={reservation.id} position="relative" w="250px" _hover={{ transform: 'translateY(-5px)' }}>
+              <Box key={reservation.id} position="relative" w="250px" _hover={{ transform: 'translateY(-5px)' }} data-cy={`reservation-item-${reservation.id}`}>
                 <Box position="relative" w="270px" bg="transparent" borderRadius="10px" overflow="hidden" color="#191919" cursor="pointer">
                   <Box w="100%" h="72%" backgroundSize="cover" backgroundPosition="center" borderBottomLeftRadius="10px" borderBottomRightRadius="10px" style={{ backgroundImage: `url(http://localhost:5001${publishedReservation.imageUrl})` }}></Box>
                   <Box fontSize="20px" color="#eaeaea" textAlign="start" fontWeight="bold">{publishedReservation.name}</Box>
@@ -121,6 +119,7 @@ export const Rate = () => {
                         bg="transparent"
                         color="#EAEAEA"
                         _hover={{ color: '#6A0572' }}
+                        data-cy={`rate-button-${reservation.id}`}
                       />
                     </Tooltip>
                     {hasRate && (
@@ -132,6 +131,7 @@ export const Rate = () => {
                           bg="transparent"
                           color="#EAEAEA"
                           _hover={{ color: '#6A0572' }}
+                          data-cy={`delete-button-${reservation.id}`}
                         />
                       </Tooltip>
                     )}

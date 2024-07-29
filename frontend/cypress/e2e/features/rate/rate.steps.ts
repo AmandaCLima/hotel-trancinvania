@@ -11,24 +11,39 @@ Given('eu estou na página {string}', (page: string) => {
     cy.visit(page);
     cy.url().should('include', page);
 });
-
-When('eu seleciono a opcao {string} da {string}', (option: string, hotelName: string) => {
-    cy.contains(hotelName).parent().within(() => {
-        cy.contains(option).click();
-    });
-});
-
-When('eu seleciono {string}', (button: string) => {
-    cy.get(`[data-cy="${button}"]`).click();
-});
 Given('eu estou na página de {string} em {string}', (page: string, menuOption: string) => {
     cy.get('[data-cy="menu-c-button"]').trigger('mouseover');
     cy.contains(menuOption).should('be.visible').click();
     cy.contains(page).should('be.visible').click();
 });
 
-When('eu preencho o campo {string} com {string}', (field: string, value: string) => {
-    cy.get(`[data-cy="${field}"]`).type(value);
+When('eu seleciono a opcao {string} do {string}', (option: string, hotelName: string) => {
+    cy.contains(hotelName)
+      .parents('[data-cy^="reservation-item-"]') // Encontra o contêiner da reserva
+      .within(() => {
+        if (option === 'Avaliar') {
+          cy.get(`[data-cy^="rate-button-"]`).click();
+        } else if (option === 'Editar Avaliação') {
+          cy.get(`[data-cy^="edit-button-"]`).click();
+        } else if (option === 'Excluir Avaliação') {
+          cy.get(`[data-cy^="delete-button-"]`).click();
+        }
+      });
+  });
+  
+
+When('eu seleciono {string}', (button: string) => {
+    cy.get(`[data-cy="${button}"]`).click();
+});
+When('eu seleciono a estrela {string}', (starNumber: string) => {
+  const index = parseInt(starNumber) - 1; // Convertendo o número da estrela para índice (zero-based)
+  cy.get('[data-cy^="star-icon-"]')
+    .eq(index)
+    .should('be.visible')
+    .click();
+});
+When('eu preencho o campo de comentários com {string}', (field: string, value: string) => {
+    cy.get(`[data-cy="comments-input"]`).type(value);
 });
 
 Then('eu vejo um toast de sucesso com a mensagem {string}', (message: string) => {
