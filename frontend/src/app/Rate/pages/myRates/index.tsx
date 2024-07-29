@@ -144,6 +144,7 @@ const Rate: React.FC = () => {
                             key={index}
                             color={index < rate.rating ? '#ffc107' : '#e4e5e9'}
                             size={20}
+                            className="fa-star"
                           />
                         ))}
                       </Flex>

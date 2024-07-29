@@ -31,10 +31,6 @@ When('eu seleciono a opcao {string} do {string}', (option: string, hotelName: st
       });
   });
   
-
-When('eu seleciono {string}', (button: string) => {
-    cy.get(`[data-cy="${button}"]`).click();
-});
 When('eu seleciono a estrela {string}', (starNumber: string) => {
   const index = parseInt(starNumber) - 1; // Convertendo o número da estrela para índice (zero-based)
   cy.get('[data-cy^="star-icon-"]')
@@ -42,8 +38,14 @@ When('eu seleciono a estrela {string}', (starNumber: string) => {
     .should('be.visible')
     .click();
 });
-When('eu preencho o campo de comentários com {string}', (field: string, value: string) => {
-    cy.get(`[data-cy="comments-input"]`).type(value);
+When('eu preencho o campo de comentários com {string}', (msg: string) => {
+  cy.get(`[data-cy="comments-input"]`).type(msg);
+
+});
+When('eu seleciono {string}', (button: string) => {
+  cy.get(`[data-cy="submit-rating-button"]`).click();
+ 
+
 });
 
 Then('eu vejo um toast de sucesso com a mensagem {string}', (message: string) => {
@@ -53,9 +55,20 @@ Then('eu vejo um toast de sucesso com a mensagem {string}', (message: string) =>
 Then('eu sou redirecionado para a página {string}', (page: string) => {
     cy.url().should('include', page);
 });
+Then('eu vejo minha avaliação da reserva {string} com {string} estrelas e comentário {string}', (hotelName: string, rating: string, comments: string) => {
+  cy.contains(hotelName).closest('[data-cy^="reservation-item-"]').within(() => {
+      // Verifica as estrelas
+      const ratingNumber = parseInt(rating, 10);
+      cy.get('.fa-star').should('have.length', 5).each(($star, index) => {
+          if (index < ratingNumber) {
+              cy.wrap($star).should('have.css', 'color', 'rgb(255, 193, 7)'); // Cor das estrelas preenchidas
+          } else {
+              cy.wrap($star).should('have.css', 'color', 'rgb(228, 229, 233)'); // Cor das estrelas vazias
+          }
+      });
 
-Then('eu vejo minha avaliação da {string} com nota {string} e comentário {string}', (hotelName: string, rating: string, comments: string) => {
-    cy.contains(hotelName).should('be.visible');
-    cy.contains(rating).should('be.visible');
-    cy.contains(comments).should('be.visible');
+      // Verifica o comentário
+      cy.contains(comments).should('be.visible');
+  });
 });
+

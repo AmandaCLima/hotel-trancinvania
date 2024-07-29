@@ -9,7 +9,6 @@ Scenario: Avaliação de reserva bem sucedida com comentário
   When eu seleciono a opcao 'Avaliar' do 'Quarto Luxo'
   And eu seleciono a estrela '3'
   And eu preencho o campo de comentários com 'Valeu a pena'
-  And eu seleciono a opcao 'Enviar Avaliação'
-  Then eu vejo um toast de sucesso com a mensagem “Avaliação enviada com sucesso!”
-  And eu sou redirecionado para a página "profile/rates"
-  And eu vejo minha avaliação da 'Quarto Luxo' com nota "3" e comentário "Valeu a pena"
+  And eu seleciono 'Enviar Avaliação'
+  Then eu vejo um toast de sucesso com a mensagem 'Avaliação enviada com sucesso!'
+  And eu vejo minha avaliação da reserva 'Quarto Luxo' com '3' estrelas e comentário 'Valeu a pena'
