@@ -21,16 +21,14 @@ When('eu seleciono a opcao {string} do {string}', (option: string, hotelName: st
     cy.contains(hotelName)
       .parents('[data-cy^="reservation-item-"]') // Encontra o contêiner da reserva
       .within(() => {
-        if (option === 'Avaliar') {
+        if (option === 'Avaliar' || option == 'Editar') {
           cy.get(`[data-cy^="rate-button-"]`).click();
-        } else if (option === 'Editar Avaliação') {
-          cy.get(`[data-cy^="edit-button-"]`).click();
         } else if (option === 'Excluir Avaliação') {
           cy.get(`[data-cy^="delete-button-"]`).click();
         }
       });
   });
-  
+
 When('eu seleciono a estrela {string}', (starNumber: string) => {
   const index = parseInt(starNumber) - 1; // Convertendo o número da estrela para índice (zero-based)
   cy.get('[data-cy^="star-icon-"]')
@@ -39,7 +37,7 @@ When('eu seleciono a estrela {string}', (starNumber: string) => {
     .click();
 });
 When('eu preencho o campo de comentários com {string}', (msg: string) => {
-  cy.get(`[data-cy="comments-input"]`).type(msg);
+  cy.get('[data-cy="comments-input"]').clear().type(msg);
 
 });
 When('eu seleciono {string}', (button: string) => {
@@ -50,6 +48,10 @@ When('eu seleciono {string}', (button: string) => {
 
 Then('eu vejo um toast de sucesso com a mensagem {string}', (message: string) => {
     cy.get('.Toastify__toast-body').should('contain.text', message);
+});
+
+Then('eu vejo um toast de erro com a mensagem {string}', (message: string) => {
+  cy.get('.Toastify__toast-body').should('contain.text', message);
 });
 
 Then('eu sou redirecionado para a página {string}', (page: string) => {
@@ -69,6 +71,19 @@ Then('eu vejo minha avaliação da reserva {string} com {string} estrelas e come
 
       // Verifica o comentário
       cy.contains(comments).should('be.visible');
+  });
+});
+Then('eu vejo minha avaliação da reserva {string} com {string} estrelas', (hotelName: string, rating: string) => {
+  cy.contains(hotelName).closest('[data-cy^="reservation-item-"]').within(() => {
+      // Verifica as estrelas
+      const ratingNumber = parseInt(rating, 10);
+      cy.get('.fa-star').should('have.length', 5).each(($star, index) => {
+          if (index < ratingNumber) {
+              cy.wrap($star).should('have.css', 'color', 'rgb(255, 193, 7)'); // Cor das estrelas preenchidas
+          } else {
+              cy.wrap($star).should('have.css', 'color', 'rgb(228, 229, 233)'); // Cor das estrelas vazias
+          }
+      });
   });
 });
 

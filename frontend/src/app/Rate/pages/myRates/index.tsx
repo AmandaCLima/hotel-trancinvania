@@ -111,10 +111,10 @@ const Rate: React.FC = () => {
                   <Box fontSize="20px" color="#eaeaea" textAlign="start" fontWeight="bold">{publishedReservation.name}</Box>
                   <Box fontSize="14px" color={statusColor} textAlign="start">{status}</Box>
                   <Box position="absolute" bottom="10px" right="10px" display="flex" gap="10px">
-                    <Tooltip label={hasRate ? "Editar Avaliação" : "Avaliar"} aria-label={hasRate ? "Editar Avaliação" : "Avaliar"}>
+                    <Tooltip label={hasRate ? "Editar" : "Avaliar"} aria-label={hasRate ? "Editar Avaliação" : "Avaliar"}>
                       <IconButton
                         icon={hasRate ? <FaEdit /> : <FaStar />}
-                        aria-label={hasRate ? "Editar Avaliação" : "Avaliar"}
+                        aria-label={hasRate ? "Editar" : "Avaliar"}
                         onClick={() => navigate(`/client/profile/rate/rating/${reservation.id}`)}
                         bg="transparent"
                         color="#EAEAEA"

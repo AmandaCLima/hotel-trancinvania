@@ -11,7 +11,7 @@ Given('eu não estou logado', (page: string, hotelName: string) => {
 });
 
 Given('eu estou na página {string} da reserva {string}', (page: string, hotelName: string) => {
-    cy.get(`[data-cy="${hotelName}"]`).click();
+    cy.get(`[data-cy="${hotelName}"]`).should('be.visible').click();
     cy.url().should('include', page);  
 });
 Given('eu estou na página de {string} em {string}', (page: string, menuOption: string) => {
